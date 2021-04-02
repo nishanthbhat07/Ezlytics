@@ -1,0 +1,96 @@
+from flask import Flask,request
+from flask_cors import CORS
+import pymongo
+from flask_bcrypt  import Bcrypt
+import jwt
+import pandas as pd
+import boto3
+import json
+from dotenv import dotenv_values
+
+config=dotenv_values('.env')
+app=Flask(__name__)
+CORS(app)
+bcrypt=Bcrypt(app)
+
+key=config['key']
+# AWS CREDENTIALS
+bucket = config['bucket']
+aws_id=config['aws_id']
+aws_secret=config['aws_secret']
+mongoURI=config['mongoURI']
+
+
+client = pymongo.MongoClient(mongoURI)
+db = client.test
+user_col=db['users']
+
+
+# SIGNUP API
+@app.route('/signup',methods=['POST'])
+def signup():
+    email=request.form['email']
+    password=request.form['password']
+    name=request.form['name']
+    if(len(password)<8):
+        return {'statusCode':422,'status':"Password length is short"}
+    else:
+        user=user_col.find_one({'email':email})
+        if(user==None):
+            hash_pwd=bcrypt.generate_password_hash(password)
+            user_col.insert_one({
+                "name":name,
+                'password':hash_pwd,
+                'email':email
+            })
+            return {'statusCode':200,"success":True}
+        else:
+            return {'statusCode':422,"success":False,"msg":"EmailID Already exists"}
+
+# LOGIN API
+@app.route('/login',methods=['POST'])
+def login():
+    cred= request.get_json()
+    cred['email']=str(cred['email'])
+    cred['password']=str(cred['password'])
+    user=user_col.find_one({'email':cred['email']})
+    if(bcrypt.check_password_hash(user['password'],cred['password'])):
+        token=jwt.encode({"email":cred['email'] }, "secret", algorithm="HS256")
+        return {'statusCode':200,"success":True,"token":token}
+    else:
+        return {'statusCode':422,"success":False,"msg":'Invalid Password / EmailID '}
+
+
+
+# AWS HELPER FUNCTIONS
+def fetch_from_aws(file_name):
+    s3 = boto3.client('s3',aws_access_key_id=aws_id,aws_secret_access_key=aws_secret) 
+    return s3.get_object(Bucket= bucket, Key= file_name)
+
+
+def delete_from_aws(file_name):
+    s3 = boto3.client('s3',aws_access_key_id=aws_id,aws_secret_access_key=aws_secret)
+    obj = s3.Object(bucket,file_name)
+    obj.delete()
+
+# RETURNS COLUMNS FROM THE CSV FILE
+@app.route('/data-display-cols',methods=['POST'])
+def get_file():
+    file_url=request.get_json()
+    global file_name
+    file_name = file_url['url'].split('/')[-1]
+    obj=fetch_from_aws(file_name=file_name)
+    global data 
+    data= pd.read_csv(obj['Body'])
+    cols=data.columns.to_list()
+    return {"columns":cols}
+
+
+# RETURNS FIRST 5 ROWS OF THE DATA
+@app.route('/data-head',methods=['GET'])
+def print_head():
+    return data.head().to_dict()
+
+
+if __name__=='__main__':
+    app.run(port=5000,debug=True)
