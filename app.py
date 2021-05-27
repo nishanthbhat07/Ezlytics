@@ -7,6 +7,8 @@ import pandas as pd
 import boto3
 import json
 from dotenv import dotenv_values
+import datetime
+from bson import json_util
 
 config=dotenv_values('.env')
 app=Flask(__name__)
@@ -22,25 +24,28 @@ mongoURI=config['mongoURI']
 
 
 client = pymongo.MongoClient(mongoURI)
-db = client.test
+db = client['DDashboard']
 user_col=db['users']
 
 
 # SIGNUP API
 @app.route('/signup',methods=['POST'])
 def signup():
-    email=request.form['email']
-    password=request.form['password']
-    name=request.form['name']
+    inps= request.get_json()
+    email=str(inps['email'])
+    password=str(inps['password'])
+    name=str(inps['name'])
     if(len(password)<8):
         return {'statusCode':422,'status':"Password length is short"}
     else:
         user=user_col.find_one({'email':email})
         if(user==None):
-            hash_pwd=bcrypt.generate_password_hash(password)
+            hash_pwd=bcrypt.generate_password_hash(password,10)
+            pwd= str(hash_pwd)
+            pwd= pwd[2:-1]
             user_col.insert_one({
                 "name":name,
-                'password':hash_pwd,
+                'password':pwd,
                 'email':email
             })
             return {'statusCode':200,"success":True}
@@ -54,9 +59,16 @@ def login():
     cred['email']=str(cred['email'])
     cred['password']=str(cred['password'])
     user=user_col.find_one({'email':cred['email']})
-    if(bcrypt.check_password_hash(user['password'],cred['password'])):
+    if(bcrypt.check_password_hash(str(user['password']),cred['password'])):
         token=jwt.encode({"email":cred['email'] }, "secret", algorithm="HS256")
-        return {'statusCode':200,"success":True,"token":token}
+        new_user={}
+        user = json.loads(json_util.dumps(user))
+        for i in user:
+            if(i=='password'):
+              continue  
+            new_user[i]=user[i]
+
+        return {'statusCode':200,"success":True,"token":token, "msg":"","user":new_user}
     else:
         return {'statusCode':422,"success":False,"msg":'Invalid Password / EmailID '}
 
