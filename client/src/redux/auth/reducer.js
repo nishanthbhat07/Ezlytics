@@ -15,7 +15,9 @@ import {
 } from "../actions";
 
 const INIT_STATE = {
-  user: localStorage.getItem("user_id"),
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
   forgotUserMail: "",
   newPassword: "",
   resetPasswordCode: "",
@@ -78,7 +80,7 @@ export default (state = INIT_STATE, action) => {
     case REGISTER_USER:
       return { ...state, loading: true, error: "" };
     case REGISTER_USER_SUCCESS:
-      return { ...state, loading: false, user: action.payload.uid, error: "" };
+      return { ...state, loading: false, user: action.payload, error: "" };
     case REGISTER_USER_ERROR:
       return {
         ...state,
@@ -89,6 +91,6 @@ export default (state = INIT_STATE, action) => {
     case LOGOUT_USER:
       return { ...state, user: null, error: "" };
     default:
-      return { ...state };
+      return state;
   }
 };

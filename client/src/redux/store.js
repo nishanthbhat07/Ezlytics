@@ -18,9 +18,7 @@ export function configureStore(initialState) {
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
   );
-
   sagaMiddleware.run(sagas);
-
   if (module.hot) {
     module.hot.accept("./reducers", () => {
       const nextRootReducer = require("./reducers");

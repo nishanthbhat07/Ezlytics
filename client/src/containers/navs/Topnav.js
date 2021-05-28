@@ -233,7 +233,9 @@ class TopNav extends Component {
           <div className="user d-inline-block">
             <UncontrolledDropdown className="dropdown-menu-right">
               <DropdownToggle className="p-0" color="empty">
-                <span className="name mr-1">Sarah Kortney</span>
+                <span className="name mr-1" style={{ fontWeight: 600 }}>
+                  {this.props.name}
+                </span>
                 <span>
                   <img alt="Profile" src="/assets/img/profile-pic-l.jpg" />
                 </span>
@@ -256,10 +258,13 @@ class TopNav extends Component {
   }
 }
 
-const mapStateToProps = ({ menu, settings }) => {
+const mapStateToProps = ({ menu, settings, authUser }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
+
+  const { name } = authUser.user;
   const { locale } = settings;
   return {
+    name,
     containerClassnames,
     menuClickCount,
     selectedMenuHasSubItems,

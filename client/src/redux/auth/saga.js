@@ -46,6 +46,7 @@ function* loginWithEmailPassword({ payload }) {
     const loginUser = yield call(loginWithEmailPasswordAsync, email, password);
     if (loginUser.statusCode === 200) {
       localStorage.setItem("user_id", loginUser.token);
+      localStorage.setItem("user", JSON.stringify(loginUser.user));
       yield put(loginUserSuccess(loginUser.user));
       history.push("/");
     } else {
@@ -60,25 +61,33 @@ export function* watchRegisterUser() {
   yield takeEvery(REGISTER_USER, registerWithEmailPassword);
 }
 
-const registerWithEmailPasswordAsync = async (email, password) =>
-  await auth
-    .createUserWithEmailAndPassword(email, password)
-    .then((authUser) => authUser)
-    .catch((error) => error);
+const registerWithEmailPasswordAsync = async (email, password, name) =>
+  await fetch(`${APIURI}/signup`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      name,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => res);
 
 function* registerWithEmailPassword({ payload }) {
-  const { email, password } = payload.user;
+  const { email, password, name } = payload.user;
   const { history } = payload;
   try {
     const registerUser = yield call(
       registerWithEmailPasswordAsync,
       email,
-      password
+      password,
+      name
     );
     if (!registerUser.message) {
-      localStorage.setItem("user_id", registerUser.user.uid);
-      yield put(registerUserSuccess(registerUser));
-      history.push("/");
+      history.push("/user/login");
     } else {
       yield put(registerUserError(registerUser.message));
     }
@@ -92,10 +101,7 @@ export function* watchLogoutUser() {
 }
 
 const logoutAsync = async (history) => {
-  await auth
-    .signOut()
-    .then((authUser) => authUser)
-    .catch((error) => error);
+  await localStorage.clear();
   history.push("/");
 };
 

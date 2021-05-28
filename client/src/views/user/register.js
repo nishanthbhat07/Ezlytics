@@ -11,14 +11,22 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "demo@gogo.com",
-      password: "gogo123",
-      name: "Sarah Kortney"
+      email: "",
+      password: "",
+      name: "",
     };
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
   onUserRegister() {
     if (this.state.email !== "" && this.state.password !== "") {
-      this.props.history.push("/");
+      console.log(this.state);
+      this.props.registerUser(this.state, this.props.history);
     }
   }
 
@@ -47,15 +55,29 @@ class Register extends Component {
               </CardTitle>
               <Form>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="name" defaultValue={this.state.name} />
+                  <Input
+                    type="name"
+                    defaultValue={this.state.name}
+                    name="name"
+                    onChange={this.handleChange}
+                  />
                   <IntlMessages id="user.fullname" />
                 </Label>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="email" defaultValue={this.state.email} />
+                  <Input
+                    type="email"
+                    defaultValue={this.state.email}
+                    name="email"
+                    onChange={this.handleChange}
+                  />
                   <IntlMessages id="user.email" />
                 </Label>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="password" />
+                  <Input
+                    type="password"
+                    name="password"
+                    onChange={this.handleChange}
+                  />
                   <IntlMessages
                     id="user.password"
                     defaultValue={this.state.password}
@@ -84,9 +106,6 @@ const mapStateToProps = ({ authUser }) => {
   return { user, loading };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    registerUser
-  }
-)(Register);
+export default connect(mapStateToProps, {
+  registerUser,
+})(Register);
