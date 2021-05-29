@@ -72,6 +72,9 @@ def login():
     else:
         return {'statusCode':422,"success":False,"msg":'Invalid Password / EmailID '}
 
+@app.route('/dummy-api',methods=['POST'])
+def dummy():
+    return {'statusCode':200, 'statusPhrase':'OK', 'progress': 100}
 
 
 # AWS HELPER FUNCTIONS
