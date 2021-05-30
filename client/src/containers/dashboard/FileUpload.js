@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import DropzoneComponent from "react-dropzone-component";
 import { uploadFile } from "react-s3";
 import { NotificationManager } from "../../components/common/react-notifications";
+
+import { connect } from "react-redux";
+import { setFileName } from "../../redux/file/file.actions";
+
 import "dropzone/dist/min/dropzone.min.css";
+
 var ReactDOMServer = require("react-dom/server");
 
 const config = {
@@ -16,18 +21,20 @@ var dropzoneComponentConfig = {
   iconFiletypes: [".csv"],
   showFiletypeIcon: true,
 };
-var eventHandlers = {
+var eventHandlers = (setFileName) => ({
   addedfile: (file) => {
     console.log(file.name);
     uploadFile(file, config)
       .then((data) => {
+        setFileName(file.name);
         NotificationManager.success("Upload Successfull", "", 3000, null, null);
       })
       .catch((err) => {
+        console.error(err);
         NotificationManager.warning("Error", "Error", 3000, null, null, "");
       });
   },
-};
+});
 var dropzoneConfig = {
   thumbnailHeight: 160,
   maxFilesize: 500,
@@ -73,14 +80,19 @@ var dropzoneConfig = {
   ),
   headers: { "My-Awesome-Header": "header value" },
 };
-export default class DropzoneExample extends Component {
+class FileUpload extends Component {
   render() {
     return (
       <DropzoneComponent
         config={dropzoneComponentConfig}
-        eventHandlers={eventHandlers}
+        eventHandlers={eventHandlers(this.props.setFileName)}
         djsConfig={dropzoneConfig}
       />
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  setFileName: (filename) => dispatch(setFileName(filename)),
+});
+export default connect(null, mapDispatchToProps)(FileUpload);

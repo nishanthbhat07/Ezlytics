@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardBody } from "reactstrap";
 
-const GradientCard = ({ children }) => {
+const GradientCard = ({ children, mapColumnsToTable }) => {
+  useState(() => {
+    mapColumnsToTable();
+  }, []);
   return (
     <Card className="dashboard-sq-banner justify-content-end">
       <CardBody className="justify-content-end d-flex flex-column">

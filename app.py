@@ -91,19 +91,29 @@ def delete_from_aws(file_name):
 # RETURNS COLUMNS FROM THE CSV FILE
 @app.route('/data-display-cols',methods=['POST'])
 def get_file():
-    file_url=request.get_json()
-    global file_name
-    file_name = file_url['url'].split('/')[-1]
+    filename=request.json
+    print(filename)
+    file_name = filename['filename']
     obj=fetch_from_aws(file_name=file_name)
-    global data 
     data= pd.read_csv(obj['Body'])
     cols=data.columns.to_list()
-    return {"columns":cols}
+    data.fillna('NaN',inplace=True)
+    # row_json_data = data.to_json(orient='records')
+    final_row_data = []
+    for index, rows in data.iterrows():
+        d = rows.to_dict()
+        d['id']=index
+        final_row_data.append(d)
+    return {"columns":cols,"data":final_row_data}
 
 
 # RETURNS FIRST 5 ROWS OF THE DATA
-@app.route('/data-head',methods=['GET'])
+@app.route('/data-head',methods=['POST'])
 def print_head():
+    filename=request.json
+    print(filename)
+    file_name = filename['filename']
+    obj=fetch_from_aws(file_name=file_name)
     return data.head().to_dict()
 
 
