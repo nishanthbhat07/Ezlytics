@@ -4,6 +4,7 @@ import pymongo
 from flask_bcrypt  import Bcrypt
 import jwt
 import pandas as pd
+import numpy as np
 import boto3
 import json
 from dotenv import dotenv_values
@@ -88,9 +89,16 @@ def delete_from_aws(file_name):
     obj = s3.Object(bucket,file_name)
     obj.delete()
 
-# RETURNS COLUMNS FROM THE CSV FILE
-@app.route('/data-display-cols',methods=['POST'])
+# RETURNS COLUMNS AND DATAFRAME FROM THE CSV FILE
+@app.route('/fetch-df',methods=['POST'])
 def get_file():
+    headers= request.headers
+    if('Authorization' not in headers.keys()):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    decode_bearer= jwt.decode(headers['Authorization'].split(' ')[-1],'secret',algorithms="HS256")['email']
+    user = user_col.find_one({'email':decode_bearer})
+    if(not user):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     filename=request.json
     print(filename)
     file_name = filename['filename']
@@ -108,14 +116,43 @@ def get_file():
 
 
 # RETURNS FIRST 5 ROWS OF THE DATA
-@app.route('/data-head',methods=['POST'])
-def print_head():
+@app.route('/fetch-stats',methods=['POST'])
+def fetch_stats():
+    headers= request.headers
+    if('Authorization' not in headers.keys()):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    decode_bearer= jwt.decode(headers['Authorization'].split(' ')[-1],'secret',algorithms="HS256")['email']
+    user = user_col.find_one({'email':decode_bearer})
+    if(not user):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     filename=request.json
-    print(filename)
     file_name = filename['filename']
     obj=fetch_from_aws(file_name=file_name)
-    return data.head().to_dict()
+    data= pd.read_csv(obj['Body'])
+    data_num= data.describe()
+    data_obj= data.describe(include=['object'])
+    # print(data_num.dtypes,'\n', data_obj.dtypes)
+    # print(data_num,"\n",data_obj)
+    final_num, final_obj = [],[]
+    for index, rows in data_num.iterrows():
+        d = rows.astype(float).to_dict()
+        d['id']=index
+        final_num.append(d)
+    for index, rows in data_obj.iterrows():
+        row=[str(x) for x in rows.values]
+        if(row[0].isnumeric()):
+            d=rows.astype(float).to_dict()
+            d['id']=index
+            final_obj.append(d)
+        else:
+            d=rows.to_dict()
+            d['id']=index
+            final_obj.append(d)
+    # print(type(final_obj),type(final_num))
+    # final_num = json.loads(json_util.dumps(final_num))
+    # final_obj = json.loads(json_util.dumps(final_obj))
 
+    return {'numerical':final_num, 'objects':final_obj}
 
 if __name__=='__main__':
     app.run(port=5000,debug=True)

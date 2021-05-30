@@ -4,7 +4,7 @@ import ReactTable from "react-table";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import DataTablePagination from "./DatatablePagination";
 import { APIURI } from "../../../constants/defaultValues";
-class ShowTable extends Component {
+class StatsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,4 +76,4 @@ class ShowTable extends Component {
   }
 }
 
-export default ShowTable;
+export default StatsTable;
