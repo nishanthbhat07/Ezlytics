@@ -89,15 +89,23 @@ def delete_from_aws(file_name):
     obj = s3.Object(bucket,file_name)
     obj.delete()
 
-# RETURNS COLUMNS AND DATAFRAME FROM THE CSV FILE
-@app.route('/fetch-df',methods=['POST'])
-def get_file():
-    headers= request.headers
+# HELPER FUNCTION ---> CHECKING AUTHORIZATION BY DECODING JWT
+def check_user_authorization(headers):
     if('Authorization' not in headers.keys()):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     decode_bearer= jwt.decode(headers['Authorization'].split(' ')[-1],'secret',algorithms="HS256")['email']
     user = user_col.find_one({'email':decode_bearer})
-    if(not user):
+    return {'user':user, 'statusCode':200}
+
+# RETURNS COLUMNS AND DATAFRAME FROM THE CSV FILE
+@app.route('/fetch-df',methods=['POST'])
+def get_file():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    print(check_auth)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     filename=request.json
     print(filename)
@@ -115,15 +123,15 @@ def get_file():
     return {"columns":cols,"data":final_row_data}
 
 
+
 # RETURNS FIRST 5 ROWS OF THE DATA
 @app.route('/fetch-stats',methods=['POST'])
 def fetch_stats():
     headers= request.headers
-    if('Authorization' not in headers.keys()):
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
-    decode_bearer= jwt.decode(headers['Authorization'].split(' ')[-1],'secret',algorithms="HS256")['email']
-    user = user_col.find_one({'email':decode_bearer})
-    if(not user):
+    if(not check_auth):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     filename=request.json
     file_name = filename['filename']
@@ -131,8 +139,6 @@ def fetch_stats():
     data= pd.read_csv(obj['Body'])
     data_num= data.describe()
     data_obj= data.describe(include=['object'])
-    # print(data_num.dtypes,'\n', data_obj.dtypes)
-    # print(data_num,"\n",data_obj)
     final_num, final_obj = [],[]
     for index, rows in data_num.iterrows():
         d = rows.astype(float).to_dict()

@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from "react";
-import { Row } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
 import DropZoneCard from "../../../components/cards/DropZoneCard";
 import { connect } from "react-redux";
 import ShowTable from "./table";
+import StatsTable from "./fetchStatsTable";
 
 class Start extends Component {
   constructor(props) {
@@ -29,7 +30,18 @@ class Start extends Component {
         <Row>
           <Colxx xxs="12" className="mb-4">
             {this.props.fileName ? (
-              <ShowTable fileName={this.props.fileName} />
+              <div>
+                <Row>
+                  <Colxx xxs="12">
+                    <ShowTable fileName={this.props.fileName} />
+                  </Colxx>
+                </Row>
+                <Row>
+                  <Col sm={12}>
+                    <StatsTable fileName={this.props.fileName} />
+                  </Col>
+                </Row>
+              </div>
             ) : (
               <DropZoneCard />
             )}

@@ -19,7 +19,7 @@ class ShowTable extends Component {
         <Colxx xxs="12">
           <Card className="mb-4">
             <CardBody>
-              <CardTitle>Table</CardTitle>
+              <CardTitle>Dataset</CardTitle>
               <ReactTable
                 data={this.state.data}
                 columns={this.state.dataTableColumns}
@@ -43,9 +43,8 @@ class ShowTable extends Component {
                   })
                     .then((res) => res.json())
                     .then((cols) => {
-                      console.log(cols);
                       const { columns, data } = cols;
-                      console.log("[FETCH FROM API]", columns, data);
+
                       const mapping = [];
                       columns.map((el) => {
                         const obj = {
@@ -61,9 +60,6 @@ class ShowTable extends Component {
                         dataTableColumns: mapping,
                         data: data,
                       });
-                      setTimeout(() => {
-                        console.log(this.state);
-                      }, 2000);
                     })
                     .catch((err) => console.error(err));
                 }}
