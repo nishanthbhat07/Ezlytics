@@ -4,7 +4,11 @@ import ReactTable from "react-table";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import DataTablePagination from "./DatatablePagination";
 import { APIURI } from "../../../constants/defaultValues";
-class ShowTable extends Component {
+import { connect } from "react-redux";
+
+import { setColumns } from "../../../redux/file/file.actions";
+
+class FetchTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +48,7 @@ class ShowTable extends Component {
                     .then((res) => res.json())
                     .then((cols) => {
                       const { columns, data } = cols;
-
+                      this.props.setColumns(columns);
                       const mapping = [];
                       columns.map((el) => {
                         const obj = {
@@ -71,5 +75,7 @@ class ShowTable extends Component {
     );
   }
 }
-
-export default ShowTable;
+const mapDispatchToProps = (dispatch) => ({
+  setColumns: (cols) => dispatch(setColumns(cols)),
+});
+export default connect(null, mapDispatchToProps)(FetchTable);

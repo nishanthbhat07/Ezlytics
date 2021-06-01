@@ -24,7 +24,9 @@ export const MENU_CHANGE_DEFAULT_CLASSES = "MENU_CHANGE_DEFAULT_CLASSES";
 export const MENU_CHANGE_HAS_SUB_ITEM_STATUS =
   "MENU_CHANGE_HAS_SUB_ITEM_STATUS";
 
+/* FILE */
 export const SET_USER_FILENAME = "SET_USER_FILENAME";
+export const SET_COLUMNS = "SET_COLUMNS";
 
 export * from "./menu/actions";
 export * from "./settings/actions";

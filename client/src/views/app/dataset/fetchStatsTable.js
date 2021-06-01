@@ -50,6 +50,12 @@ class StatsTable extends Component {
                       var col2 = Object.keys(objects[0]);
                       const columns = col1.map((el) => el);
                       const columns1 = col2.map((el) => el);
+                      var temp = columns[0];
+                      columns[0] = columns[columns.length - 1];
+                      columns[columns.length - 1] = temp;
+                      temp = columns1[0];
+                      columns1[0] = columns1[columns1.length - 1];
+                      columns1[columns1.length - 1] = temp;
                       const mapping = [];
                       const mapping1 = [];
                       columns.map((el) => {
