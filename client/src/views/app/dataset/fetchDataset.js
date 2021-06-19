@@ -1,12 +1,20 @@
-import React, { Component } from "react";
+import React, { Component, memo } from "react";
 import { Card, CardBody, CardTitle, Row, Col } from "reactstrap";
 import ReactTable from "react-table";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import DataTablePagination from "./DatatablePagination";
-import { APIURI } from "../../../constants/defaultValues";
+import {
+  APIURI,
+  themeRadiusStorageKey,
+} from "../../../constants/defaultValues";
 import { connect } from "react-redux";
 
-import { setColumns } from "../../../redux/file/file.actions";
+import {
+  setColumns,
+  setCategoricalColumns,
+  setNumericalColumns,
+  setDataset,
+} from "../../../redux/file/file.actions";
 
 class FetchTable extends Component {
   constructor(props) {
@@ -47,8 +55,11 @@ class FetchTable extends Component {
                   })
                     .then((res) => res.json())
                     .then((cols) => {
-                      const { columns, data } = cols;
+                      const { columns, data, numerical_cols, cat_cols } = cols;
                       this.props.setColumns(columns);
+                      this.props.setCategoricalCols(cat_cols);
+                      this.props.setNumericalCols(numerical_cols);
+                      this.props.setDataset(data);
                       const mapping = [];
                       columns.map((el) => {
                         const obj = {
@@ -75,7 +86,14 @@ class FetchTable extends Component {
     );
   }
 }
+// const mapPropsToState = (state) => ({
+//   dataset: state.file.dataset,
+//   columns: state.file.columns,
+// });
 const mapDispatchToProps = (dispatch) => ({
   setColumns: (cols) => dispatch(setColumns(cols)),
+  setNumericalCols: (cols) => dispatch(setNumericalColumns(cols)),
+  setCategoricalCols: (cols) => dispatch(setCategoricalColumns(cols)),
+  setDataset: (dataset) => dispatch(setDataset(dataset)),
 });
-export default connect(null, mapDispatchToProps)(FetchTable);
+export default connect(null, mapDispatchToProps)(memo(FetchTable));

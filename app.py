@@ -2,6 +2,7 @@ from flask import Flask,request
 from flask_cors import CORS
 import pymongo
 from flask_bcrypt  import Bcrypt
+from flask_caching import Cache
 import jwt
 import pandas as pd
 import numpy as np
@@ -12,9 +13,16 @@ import datetime
 from bson import json_util
 
 config=dotenv_values('.env')
+cache_config = {
+    "DEBUG": True,         
+    "CACHE_TYPE": "SimpleCache", 
+    "CACHE_DEFAULT_TIMEOUT": 300
+}
 app=Flask(__name__)
 CORS(app)
 bcrypt=Bcrypt(app)
+app.config.from_mapping(cache_config)
+cache = Cache(app)
 
 key=config['key']
 # AWS CREDENTIALS
@@ -99,33 +107,36 @@ def check_user_authorization(headers):
 
 # RETURNS COLUMNS AND DATAFRAME FROM THE CSV FILE
 @app.route('/fetch-df',methods=['POST'])
+@cache.cached(timeout=50)
 def get_file():
     headers= request.headers
     check_auth= check_user_authorization(headers=headers)
-    print(check_auth)
     if(check_auth['statusCode']==401):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     if(not check_auth):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     filename=request.json
-    print(filename)
     file_name = filename['filename']
     obj=fetch_from_aws(file_name=file_name)
     data= pd.read_csv(obj['Body'])
     cols=data.columns.to_list()
     data.fillna('NaN',inplace=True)
+    numerical_cols=data._get_numeric_data().columns.to_list()
+    cat_cols=list(set(cols)-set(numerical_cols))
     # row_json_data = data.to_json(orient='records')
     final_row_data = []
     for index, rows in data.iterrows():
         d = rows.to_dict()
         d['id']=index
         final_row_data.append(d)
-    return {"columns":cols,"data":final_row_data}
+
+    return {"columns":cols,"data":final_row_data,"numerical_cols":numerical_cols,"cat_cols":cat_cols}
 
 
 
 # RETURNS FIRST 5 ROWS OF THE DATA
 @app.route('/fetch-stats',methods=['POST'])
+@cache.cached(timeout=50)
 def fetch_stats():
     headers= request.headers
     check_auth= check_user_authorization(headers=headers)
