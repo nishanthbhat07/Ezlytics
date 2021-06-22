@@ -19,8 +19,6 @@ export default (state = INIT_STATE, action) => {
     case SET_USER_FILENAME:
       return { ...state, filename: action.payload };
 
-    case SET_DATASET:
-      return { ...state, dataset: action.payload };
     case SET_COLUMNS:
       return { ...state, columns: action.payload };
 

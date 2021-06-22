@@ -35,6 +35,7 @@ mongoURI=config['mongoURI']
 client = pymongo.MongoClient(mongoURI)
 db = client['DDashboard']
 user_col=db['users']
+dataset=db['datasets']
 
 
 # SIGNUP API
@@ -115,8 +116,18 @@ def get_file():
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
     if(not check_auth):
         return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+
     filename=request.json
     file_name = filename['filename']
+    find_dataset_user= dataset.find_one({'user_id':check_auth['user']['_id'], 'dataset': file_name})
+    if(not find_dataset_user):
+        
+        dataset.insert_one({
+            'user_id': check_auth['user']['_id'],
+            'file_name': file_name,
+            'isPickled': False,
+            'pickle': None
+        })
     obj=fetch_from_aws(file_name=file_name)
     data= pd.read_csv(obj['Body'])
     cols=data.columns.to_list()
@@ -170,6 +181,24 @@ def fetch_stats():
     # final_obj = json.loads(json_util.dumps(final_obj))
 
     return {'numerical':final_num, 'objects':final_obj}
+
+@app.route('/fetch-all-user-datasets',methods=['GET'])
+@cache.cached(timeout=50)
+def fetch_user_datasets():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    results = dataset.find({'user_id':check_auth['user']['_id']})
+    pack_results=[] 
+    for i in results:
+        pack_results.append(json.loads(json_util.dumps(i)))
+    return {'statusCode':200, 'user_datasets':pack_results}
+
+
+
 
 if __name__=='__main__':
     app.run(port=5000,debug=True)

@@ -13,7 +13,7 @@ import IntlMessages from "../../helpers/IntlMessages";
 import DropZone from "../../containers/dashboard/FileUpload";
 import { Separator } from "../common/CustomBootstrap";
 
-class UserCardBasic extends Component {
+class DropZoneCard extends Component {
   render() {
     return (
       <Card className="d-flex flex-row mb-4">
@@ -33,4 +33,4 @@ class UserCardBasic extends Component {
   }
 }
 
-export default injectIntl(UserCardBasic);
+export default injectIntl(DropZoneCard);

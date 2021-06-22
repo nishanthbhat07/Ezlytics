@@ -1,47 +1,27 @@
 const data = [
   {
+    id: "prev",
+    icon: "iconsminds-big-data",
+    label: "menu.prev",
+    to: "/app/previous-work",
+  },
+  {
     id: "dash",
     icon: "iconsminds-data-cloud",
-    label: "menu.dashboard",
-    to: "/app/dashboard",
-    subs: [
-      {
-        icon: "simple-icon-paper-plane",
-        label: "menu.show-dataset",
-        to: "/app/dashboard/show-dataset",
-      },
-      {
-        icon: "simple-icon-paper-plane",
-        label: "menu.show-stats",
-        to: "/app/dashboard/show-stats",
-      },
-    ],
+    label: "menu.show-dataset",
+    to: "/app/dashboard/show-dataset",
   },
   {
-    id: "secondmenu",
-    icon: "iconsminds-three-arrow-fork",
-    label: "menu.second-menu",
-    to: "/app/second-menu",
-    subs: [
-      {
-        icon: "simple-icon-paper-plane",
-        label: "menu.second",
-        to: "/app/second-menu/second",
-      },
-    ],
+    id: "show-stats",
+    icon: "iconsminds-statistic",
+    label: "menu.show-stats",
+    to: "/app/dashboard/show-stats",
   },
   {
-    id: "blankpage",
-    icon: "iconsminds-bucket",
-    label: "menu.blank-page",
+    id: "charts",
+    icon: "iconsminds-pie-chart-3",
+    label: "menu.analysis",
     to: "/app/blank-page",
-  },
-  {
-    id: "docs",
-    icon: "iconsminds-library",
-    label: "menu.docs",
-    to: "https://gogo-react-docs.coloredstrategies.com/",
-    newWindow: true,
   },
 ];
 export default data;

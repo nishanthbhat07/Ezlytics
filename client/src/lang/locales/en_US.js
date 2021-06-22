@@ -31,6 +31,8 @@ module.exports = {
   "menu.dashboard": "Dashboard",
   "menu.gogo": "Gogo",
   "menu.show-dataset": "Dataset",
+  "menu.prev": "Previous Datasets",
+  "menu.analysis": "Analysis",
   "menu.second-menu": "Second Menu",
   "menu.second": "Second",
   "menu.ui": "UI",

@@ -29,7 +29,6 @@ export const SET_USER_FILENAME = "SET_USER_FILENAME";
 export const SET_COLUMNS = "SET_COLUMNS";
 export const SET_NUMERICAL_COLS = "SET_NUMERICAL_COLS";
 export const SET_CATEGORICAL_COLUMNS = "SET_CATEGORICAL_COLUMNS";
-export const SET_DATASET = "SET_DATASET";
 
 export * from "./menu/actions";
 export * from "./settings/actions";
