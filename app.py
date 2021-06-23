@@ -1,6 +1,8 @@
 from flask import Flask,request
 from flask_cors import CORS
 import pymongo
+from bson.objectid import ObjectId
+from bson.binary import Binary
 from flask_bcrypt  import Bcrypt
 from flask_caching import Cache
 import jwt
@@ -11,6 +13,7 @@ import json
 from dotenv import dotenv_values
 import datetime
 from bson import json_util
+import pickle
 
 config=dotenv_values('.env')
 cache_config = {
@@ -119,9 +122,9 @@ def get_file():
 
     filename=request.json
     file_name = filename['filename']
-    find_dataset_user= dataset.find_one({'user_id':check_auth['user']['_id'], 'dataset': file_name})
+    find_dataset_user= dataset.find_one({'user_id':ObjectId(check_auth['user']['_id']), 'file_name': file_name})
     if(not find_dataset_user):
-        
+        print("Executing inside if stmt !!!!!! /fetch-df API")
         dataset.insert_one({
             'user_id': check_auth['user']['_id'],
             'file_name': file_name,
@@ -140,7 +143,6 @@ def get_file():
         d = rows.to_dict()
         d['id']=index
         final_row_data.append(d)
-
     return {"columns":cols,"data":final_row_data,"numerical_cols":numerical_cols,"cat_cols":cat_cols}
 
 
@@ -197,8 +199,48 @@ def fetch_user_datasets():
         pack_results.append(json.loads(json_util.dumps(i)))
     return {'statusCode':200, 'user_datasets':pack_results}
 
-
-
+@app.route('/load-dataset',methods=['POST'])
+def load_dataset():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    filename=request.json
+    file_name = filename['filename']
+    user_id= check_auth['user']['_id']
+    fetch_dataset= dataset.find_one({'user_id':ObjectId(user_id),'file_name':file_name})
+    dataset1=pickle.load(fetch_dataset['pickle'])
+    dataset1=pd.DataFrame(dataset1)
+    final_row_data = []
+    for index, rows in dataset1.iterrows():
+        d = rows.to_dict()
+        d['id']=index
+        final_row_data.append(d)
+    return { 'statusCode':200,'dataset':final_row_data}
+    
+@app.route('/pickle-dataset',methods=['POST'])
+def pickle_dataset():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    body=request.json
+    dataset_ = body['dataset']
+    file_name=body['file_name']
+    user_id= check_auth['user']['_id']
+    data=pd.DataFrame(dataset_)
+    dump = pickle.dumps(data)
+    new_val={
+        '$set':{
+            'pickle': dump
+        }
+    }
+    dataset.update_one({'user_id':user_id,'file_name':file_name},new_val)
+    return {'statusCode':200, 'msg':"Pickle uploaded successfully!"}
 
 if __name__=='__main__':
     app.run(port=5000,debug=True)

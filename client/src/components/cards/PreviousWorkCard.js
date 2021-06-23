@@ -4,7 +4,29 @@ import { Card, CardBody, CardHeader, Row, Col, Button } from "reactstrap";
 
 import { Separator } from "../common/CustomBootstrap";
 
+import { APIURI } from "../../constants/defaultValues";
+
 class PreviousWork extends Component {
+  constructor(props) {
+    super(props);
+    // this.loadDataset=this.loadDataset.bind(this);
+  }
+
+  // loadDataset=(file_name)=>{
+  //   fetch(`${APIURI}/load-dataset`,{
+  //     method:"post",
+  //     headers:{
+  //       'Content-Type':"application/json",
+  //       'Authorization' : `Bearer ${localStorage.getItem('user_id')}`
+  //     },
+  //     body:JSON.stringify({
+  //       file_name
+  //     })
+  //   }).then(res=>res.json()).then(results=>{
+
+  //   })
+  // }
+
   render() {
     const { datasets } = this.props;
     return (

@@ -27,7 +27,9 @@ class FetchTable extends Component {
         <Colxx xxs="12">
           <Card className="mb-4">
             <CardBody>
-              <CardTitle>Dataset</CardTitle>
+              <CardTitle style={{ fontSize: 24, fontWeight: 500 }}>
+                Dataset
+              </CardTitle>
               <ReactTable
                 data={this.state.data}
                 columns={this.state.dataTableColumns}
