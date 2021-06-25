@@ -19,7 +19,7 @@ const data = [
   },
   {
     id: "charts",
-    icon: "iconsminds-pie-chart-3",
+    icon: "iconsminds-monitor-analytics",
     label: "menu.analysis",
     to: "/app/blank-page",
   },

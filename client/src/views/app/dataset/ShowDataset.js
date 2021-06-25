@@ -4,7 +4,7 @@ import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 
 import DropZoneCard from "../../../components/cards/DropZoneCard";
 import { connect } from "react-redux";
-import FetchTable from "./fetchDataset";
+import FetchDataset from "./fetchDataset";
 
 class ShowDataset extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class ShowDataset extends Component {
               <div>
                 <Row>
                   <Colxx xxs="12">
-                    <FetchTable fileName={this.props.fileName} />
+                    <FetchDataset fileName={this.props.fileName} />
                   </Colxx>
                 </Row>
               </div>

@@ -128,7 +128,6 @@ def get_file():
         dataset.insert_one({
             'user_id': check_auth['user']['_id'],
             'file_name': file_name,
-            'isPickled': False,
             'pickle': None
         })
     obj=fetch_from_aws(file_name=file_name)
@@ -211,7 +210,8 @@ def load_dataset():
     file_name = filename['filename']
     user_id= check_auth['user']['_id']
     fetch_dataset= dataset.find_one({'user_id':ObjectId(user_id),'file_name':file_name})
-    dataset1=pickle.load(fetch_dataset['pickle'])
+    # print(fetch_dataset['pickle'])
+    dataset1=pickle.loads(fetch_dataset['pickle'])
     dataset1=pd.DataFrame(dataset1)
     final_row_data = []
     for index, rows in dataset1.iterrows():

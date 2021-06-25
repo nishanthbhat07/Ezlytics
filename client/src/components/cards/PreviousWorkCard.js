@@ -5,27 +5,19 @@ import { Card, CardBody, CardHeader, Row, Col, Button } from "reactstrap";
 import { Separator } from "../common/CustomBootstrap";
 
 import { APIURI } from "../../constants/defaultValues";
+import { connect } from "react-redux";
+import { setFileName } from "../../redux/file/file.actions";
 
 class PreviousWork extends Component {
   constructor(props) {
     super(props);
-    // this.loadDataset=this.loadDataset.bind(this);
+    this.loadDataset = this.loadDataset.bind(this);
   }
 
-  // loadDataset=(file_name)=>{
-  //   fetch(`${APIURI}/load-dataset`,{
-  //     method:"post",
-  //     headers:{
-  //       'Content-Type':"application/json",
-  //       'Authorization' : `Bearer ${localStorage.getItem('user_id')}`
-  //     },
-  //     body:JSON.stringify({
-  //       file_name
-  //     })
-  //   }).then(res=>res.json()).then(results=>{
-
-  //   })
-  // }
+  loadDataset = (file_name) => {
+    this.props.setFileName(file_name);
+    this.props.history.push("/app/dashboard/show-dataset");
+  };
 
   render() {
     const { datasets } = this.props;
@@ -48,6 +40,7 @@ class PreviousWork extends Component {
                         color="primary"
                         className={`btn-shadow`}
                         size="lg"
+                        onClick={() => this.loadDataset(el.file_name)}
                       >
                         <span className="label">Load Dataset</span>
                       </Button>
@@ -78,4 +71,7 @@ class PreviousWork extends Component {
   }
 }
 
-export default injectIntl(PreviousWork);
+const mapDispatchToProps = (dispatch) => ({
+  setFileName: (filename) => dispatch(setFileName(filename)),
+});
+export default connect(null, mapDispatchToProps)(injectIntl(PreviousWork));
