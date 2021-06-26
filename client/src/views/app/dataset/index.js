@@ -8,11 +8,7 @@ const ShowStats = React.lazy(() => import("./ShowStats"));
 const Gogo = ({ match }) => (
   <Suspense fallback={<div className="loading" />}>
     <Switch>
-      <Redirect
-        exact
-        from={`${match.url}/`}
-        to={`${match.url}/previous-work`}
-      />
+      <Redirect exact from={`${match.url}/`} to={`${match.url}/show-dataset`} />
       <Route
         path={`${match.url}/show-dataset`}
         render={(props) => <ShowDataset {...props} />}

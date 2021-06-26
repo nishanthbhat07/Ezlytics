@@ -70,7 +70,7 @@ class FetchDataset extends Component {
                       <span className="bounce2" />
                       <span className="bounce3" />
                     </span>
-                    <span className="label">Click here to Pickle Dataset</span>
+                    <span className="label">Click here to Save</span>
                   </Button>
                 </Col>
               </Row>

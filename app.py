@@ -111,7 +111,7 @@ def check_user_authorization(headers):
 
 # RETURNS COLUMNS AND DATAFRAME FROM THE CSV FILE
 @app.route('/fetch-df',methods=['POST'])
-@cache.cached(timeout=50)
+@cache.cached(timeout=3600)
 def get_file():
     headers= request.headers
     check_auth= check_user_authorization(headers=headers)
@@ -148,7 +148,7 @@ def get_file():
 
 # RETURNS FIRST 5 ROWS OF THE DATA
 @app.route('/fetch-stats',methods=['POST'])
-@cache.cached(timeout=50)
+@cache.cached(timeout=3600)
 def fetch_stats():
     headers= request.headers
     check_auth= check_user_authorization(headers=headers)
@@ -184,7 +184,7 @@ def fetch_stats():
     return {'numerical':final_num, 'objects':final_obj}
 
 @app.route('/fetch-all-user-datasets',methods=['GET'])
-@cache.cached(timeout=50)
+@cache.cached(timeout=3600)
 def fetch_user_datasets():
     headers= request.headers
     check_auth= check_user_authorization(headers=headers)
@@ -233,6 +233,9 @@ def pickle_dataset():
     file_name=body['file_name']
     user_id= check_auth['user']['_id']
     data=pd.DataFrame(dataset_)
+    data.to_csv(f'{file_name}')
+    s3 = boto3.client('s3',aws_access_key_id=aws_id,aws_secret_access_key=aws_secret) 
+    response=s3.upload_file(file_name,bucket,file_name)
     dump = pickle.dumps(data)
     new_val={
         '$set':{
