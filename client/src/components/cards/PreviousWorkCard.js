@@ -33,13 +33,19 @@ class PreviousWork extends Component {
               {datasets.map((el) => (
                 <React.Fragment key={el._id.$oid}>
                   <Row style={{ margin: 10, padding: 10, fontSize: 20 }}>
-                    <Col sm={3}>{el.file_name}</Col>
+                    <Col sm={6} md={3} lg={4}>
+                      {el.file_name}
+                    </Col>
                     {/*  <Col sm={6}>{el.lastEdit}</Col>*/}
-                    <Col sm={3}>
+                    <Col
+                      sm={6}
+                      md={{ offset: 5, size: 4 }}
+                      lg={{ offset: 2, size: 4 }}
+                    >
                       <Button
                         color="primary"
                         className={`btn-shadow`}
-                        size="lg"
+                        size="sm"
                         onClick={() => this.loadDataset(el.file_name)}
                       >
                         <span className="label">Load Dataset</span>

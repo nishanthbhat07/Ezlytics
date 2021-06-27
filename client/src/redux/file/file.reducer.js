@@ -7,7 +7,7 @@ import {
 } from "../actions";
 
 const INIT_STATE = {
-  filename: "",
+  filename: "summer.csv",
   columns: [],
   dataset: [],
   numerical_cols: [],

@@ -10,8 +10,8 @@ const Dashboard = React.lazy(() =>
 const PreviousWork = React.lazy(() =>
   import(/* webpackChunkName: "viwes-second-menu" */ "./previous-work")
 );
-const BlankPage = React.lazy(() =>
-  import(/* webpackChunkName: "viwes-blank-page" */ "./blank-page")
+const Analysis = React.lazy(() =>
+  import(/* webpackChunkName: "viwes-blank-page" */ "./analysis")
 );
 
 class App extends Component {
@@ -37,8 +37,8 @@ class App extends Component {
                 render={(props) => <PreviousWork {...props} />}
               />
               <Route
-                path={`${match.url}/blank-page`}
-                render={(props) => <BlankPage {...props} />}
+                path={`${match.url}/analysis`}
+                render={(props) => <Analysis {...props} />}
               />
               <Redirect to="/error" />
             </Switch>

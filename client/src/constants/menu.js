@@ -21,7 +21,7 @@ const data = [
     id: "charts",
     icon: "iconsminds-monitor-analytics",
     label: "menu.analysis",
-    to: "/app/blank-page",
+    to: "/app/analysis",
   },
 ];
 export default data;

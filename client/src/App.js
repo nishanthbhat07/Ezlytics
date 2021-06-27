@@ -51,6 +51,7 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => {
 class App extends Component {
   constructor(props) {
     super(props);
+    document.body.classList.add("rounded");
     const direction = getDirection();
     if (direction.isRtl) {
       document.body.classList.add("rtl");
@@ -74,7 +75,7 @@ class App extends Component {
         >
           <React.Fragment>
             <NotificationContainer />
-            {isMultiColorActive && <ColorSwitcher />}
+
             <Suspense fallback={<div className="loading" />}>
               <Router>
                 <Switch>
