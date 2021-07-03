@@ -24,6 +24,9 @@ const ChooseColsAndAnalysisModal = ({
   setAnalysisType,
   selectedCol,
   setSelectedCol,
+  setSelectedCols,
+  selectedCols1,
+  selectedCols2,
 }) => {
   return (
     <Modal isOpen={isOpen} toggle={() => showModal()}>
@@ -61,6 +64,35 @@ const ChooseColsAndAnalysisModal = ({
               })}
             </Input>
           </FormGroup>
+        ) : showCols && analysisType === "Bivariate Analysis" ? (
+          <>
+            <FormGroup>
+              <Label for="selectedCols1">Select from numerical Columns</Label>
+              <Input
+                type="select"
+                value={selectedCols1}
+                onChange={(e) => setSelectedCols(e)}
+                name="selectedCols1"
+              >
+                {numerical_cols.map((el) => {
+                  if (el !== "id") return <option key={el}>{el}</option>;
+                })}
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label for="selectedCols2">Select from categorical Columns</Label>
+              <Input
+                type="select"
+                value={selectedCols2}
+                onChange={(e) => setSelectedCols(e)}
+                name="selectedCols2"
+              >
+                {categorical_cols.map((el) => {
+                  if (el !== "id") return <option key={el}>{el}</option>;
+                })}
+              </Input>
+            </FormGroup>
+          </>
         ) : null}
       </ModalBody>
       <ModalFooter>

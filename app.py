@@ -245,5 +245,29 @@ def pickle_dataset():
     dataset.update_one({'user_id':user_id,'file_name':file_name},new_val)
     return {'statusCode':200, 'msg':"Pickle uploaded successfully!"}
 
+@app.route('/fetch-data-for-graph',methods=['POST'])
+def fetch_data_for_graph():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    body=request.json
+    file_name=body['filename']
+    ana_type=body['type']
+    if(ana_type == 'Univariate Analysis'):
+        col=body['column']
+        obj=fetch_from_aws(file_name=file_name)
+        data= pd.read_csv(obj['Body'])
+        return {'statusCode':200, 'data':data.loc[:,col],'column':col}
+    else:
+        col1=body['col1']
+        col2=body['col2']
+        obj=fetch_from_aws(file_name=file_name)
+        data= pd.read_csv(obj['Body'])
+        return {'statusCode':200, 'data':data.loc[:,[col1,col2]],'col1':col1,'col2':col2}
+
+
 if __name__=='__main__':
     app.run(port=5000,debug=True)
