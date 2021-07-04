@@ -27,6 +27,7 @@ const ChooseColsAndAnalysisModal = ({
   setSelectedCols,
   selectedCols1,
   selectedCols2,
+  drawGraphs,
 }) => {
   return (
     <Modal isOpen={isOpen} toggle={() => showModal()}>
@@ -96,7 +97,7 @@ const ChooseColsAndAnalysisModal = ({
         ) : null}
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={() => console.log(analysisType)}>
+        <Button color="primary" onClick={() => drawGraphs()}>
           Send
         </Button>{" "}
         <Button color="secondary" onClick={() => showModal()}>

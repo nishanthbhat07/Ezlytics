@@ -10,7 +10,7 @@ export default class Doughnut extends React.Component {
     if (this.props.shadow) {
       Chart.defaults.doughnutWithShadow = Chart.defaults.doughnut;
       Chart.controllers.doughnutWithShadow = Chart.controllers.doughnut.extend({
-        draw: function(ease) {
+        draw: function (ease) {
           Chart.controllers.doughnut.prototype.draw.call(this, ease);
           let ctx = this.chart.chart.ctx;
           ctx.save();
@@ -21,7 +21,7 @@ export default class Doughnut extends React.Component {
           ctx.responsive = true;
           Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
           ctx.restore();
-        }
+        },
       });
     }
   }
@@ -30,11 +30,11 @@ export default class Doughnut extends React.Component {
     const { data, shadow } = this.props;
     return (
       <ChartComponent
-        ref={ref => (this.chart_instance = ref && ref.chart_instance)}
+        ref={(ref) => (this.chart_instance = ref && ref.chart_instance)}
         type={shadow ? "doughnutWithShadow" : "doughnut"}
         plugins={[centerTextPlugin]}
         options={{
-          ...doughnutChartOptions
+          ...doughnutChartOptions,
         }}
         data={data}
       />

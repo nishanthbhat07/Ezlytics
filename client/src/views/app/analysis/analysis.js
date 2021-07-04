@@ -2,16 +2,9 @@ import React, { Component } from "react";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import { Row, Card, CardBody, CardTitle, Button, Col } from "reactstrap";
 import ChooseColsAndAnalysisModal from "./modal";
-import {
-  DoughnutChart,
-  LineChart,
-  PolarAreaChart,
-  AreaChart,
-  ScatterChart,
-  BarChart,
-  RadarChart,
-  PieChart,
-} from "../../../components/charts";
+import PlotGraph from "./plotGraph";
+
+import { makeDataPlotableBivariate, makeDataPlotableUnivariate } from "./utils";
 
 import { APIURI } from "../../../constants/defaultValues";
 
@@ -27,12 +20,15 @@ class Analysis extends Component {
       selectedCol: "",
       selectedCols1: "",
       selectedCols2: "",
+      plots: [],
+      plotOptions: [],
     };
     this.showModal = this.showModal.bind(this);
     this.setAnalysisType = this.setAnalysisType.bind(this);
     this.setShowCols = this.setShowCols.bind(this);
     this.setSelectedCol = this.setSelectedCol.bind(this);
     this.setSelectedCols = this.setSelectedCols.bind(this);
+    this.drawGraphs = this.drawGraphs.bind(this);
   }
   showModal = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -66,7 +62,22 @@ class Analysis extends Component {
       })
         .then((res) => res.json())
         .then((results) => {
-          console.log(results);
+          // console.log(results);
+          const { data } = results;
+          const chartObj = makeDataPlotableUnivariate(
+            Object.values(data),
+            this.state.selectedCol
+          );
+
+          var options = {
+            graphTitle: `Pie Chart of ${this.state.selectedCol}`,
+            chartObj: chartObj,
+          };
+
+          this.setState({
+            plots: this.state.plots.concat([options]),
+          });
+          this.showModal();
         });
     } else {
       fetch(`${APIURI}/fetch-data-for-graphs`, {
@@ -85,6 +96,22 @@ class Analysis extends Component {
         .then((res) => res.json())
         .then((result) => {
           console.log(result);
+
+          const { data } = result;
+          const chartObj = makeDataPlotableBivariate(
+            data,
+            this.state.selectedCols1,
+            this.state.selectedCols2
+          );
+          // console.log("[Chart Obj]: ", chartObj);
+          var options = {
+            graphTitle: `Pie Chart of ${this.state.selectedCol}`,
+            chartObj: chartObj,
+          };
+          this.setState({
+            plots: this.state.plots.concat([options]),
+          });
+          this.showModal();
         });
     }
   };
@@ -93,6 +120,16 @@ class Analysis extends Component {
     return (
       <Row className="mb-4">
         <Colxx xxs="12">
+          {this.state.plots
+            ? this.state.plots.map((item) => (
+                <Colxx className="mb-4" xxs="12">
+                  <PlotGraph
+                    graphTitle={item.graphTitle}
+                    chartObj={item.chartObj}
+                  />
+                </Colxx>
+              ))
+            : null}
           <Card style={{ cursor: "pointer" }} onClick={() => this.showModal()}>
             <CardBody
               style={{
@@ -120,15 +157,8 @@ class Analysis extends Component {
                 selectedCol={this.state.selectedCol}
                 selectedCols1={this.state.selectedCols1}
                 selectedCols2={this.state.selectedCols2}
+                drawGraphs={this.drawGraphs}
               />
-
-              <Row>
-                <Colxx xxs="12" lg="6" className="mb-5">
-                  <div className="chart-container">
-                    {/* <LineChart shadow data={lineChartData} />*/}
-                  </div>
-                </Colxx>
-              </Row>
             </CardBody>
           </Card>
         </Colxx>

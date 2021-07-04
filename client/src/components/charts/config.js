@@ -1,16 +1,16 @@
-import { chartTooltip } from './util'
+import { chartTooltip } from "./util";
 
 export const lineChartOptions = {
   legend: {
-    display: false
+    display: false,
   },
   responsive: true,
   maintainAspectRatio: false,
   tooltips: chartTooltip,
   plugins: {
     datalabels: {
-      display: false
-    }
+      display: false,
+    },
   },
   scales: {
     yAxes: [
@@ -18,54 +18,54 @@ export const lineChartOptions = {
         gridLines: {
           display: true,
           lineWidth: 1,
-          color: 'rgba(0,0,0,0.1)',
-          drawBorder: false
+          color: "rgba(0,0,0,0.1)",
+          drawBorder: false,
         },
         ticks: {
           beginAtZero: true,
           stepSize: 5,
           min: 50,
           max: 70,
-          padding: 20
-        }
-      }
+          padding: 20,
+        },
+      },
     ],
     xAxes: [
       {
         gridLines: {
-          display: false
-        }
-      }
-    ]
-  }
-}
+          display: false,
+        },
+      },
+    ],
+  },
+};
 export const polarAreaChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
   scale: {
     ticks: {
-      display: false
-    }
+      display: false,
+    },
   },
   plugins: {
     datalabels: {
-      display: false
-    }
+      display: false,
+    },
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const areaChartOptions = {
   legend: {
-    display: false
+    display: false,
   },
   responsive: true,
   maintainAspectRatio: false,
@@ -76,36 +76,36 @@ export const areaChartOptions = {
         gridLines: {
           display: true,
           lineWidth: 1,
-          color: 'rgba(0,0,0,0.1)',
-          drawBorder: false
+          color: "rgba(0,0,0,0.1)",
+          drawBorder: false,
         },
         ticks: {
           beginAtZero: true,
           stepSize: 5,
           min: 50,
           max: 70,
-          padding: 20
-        }
-      }
+          padding: 20,
+        },
+      },
     ],
     xAxes: [
       {
         gridLines: {
-          display: false
-        }
-      }
-    ]
-  }
-}
+          display: false,
+        },
+      },
+    ],
+  },
+};
 
 export const scatterChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
@@ -115,39 +115,39 @@ export const scatterChartOptions = {
         gridLines: {
           display: true,
           lineWidth: 1,
-          color: 'rgba(0,0,0,0.1)',
-          drawBorder: false
+          color: "rgba(0,0,0,0.1)",
+          drawBorder: false,
         },
         ticks: {
           beginAtZero: true,
           stepSize: 20,
           min: -80,
           max: 80,
-          padding: 20
-        }
-      }
+          padding: 20,
+        },
+      },
     ],
     xAxes: [
       {
         gridLines: {
           display: true,
           lineWidth: 1,
-          color: 'rgba(0,0,0,0.1)'
-        }
-      }
-    ]
+          color: "rgba(0,0,0,0.1)",
+        },
+      },
+    ],
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const barChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
@@ -157,92 +157,92 @@ export const barChartOptions = {
         gridLines: {
           display: true,
           lineWidth: 1,
-          color: 'rgba(0,0,0,0.1)',
-          drawBorder: false
+          color: "rgba(0,0,0,0.1)",
+          drawBorder: false,
         },
         ticks: {
           beginAtZero: true,
           stepSize: 100,
           min: 300,
           max: 800,
-          padding: 20
-        }
-      }
+          padding: 20,
+        },
+      },
     ],
     xAxes: [
       {
         gridLines: {
-          display: false
-        }
-      }
-    ]
+          display: false,
+        },
+      },
+    ],
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const radarChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
   scale: {
     ticks: {
-      display: false
-    }
+      display: false,
+    },
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const pieChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
   title: {
-    display: false
+    display: false,
   },
   layout: {
     padding: {
-      bottom: 20
-    }
+      bottom: 20,
+    },
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const doughnutChartOptions = {
   legend: {
-    position: 'bottom',
+    position: "bottom",
     labels: {
       padding: 30,
       usePointStyle: true,
-      fontSize: 12
-    }
+      fontSize: 12,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
   title: {
-    display: false
+    display: false,
   },
   cutoutPercentage: 80,
   layout: {
     padding: {
-      bottom: 20
-    }
+      bottom: 20,
+    },
   },
-  tooltips: chartTooltip
-}
+  tooltips: chartTooltip,
+};
 
 export const smallLineChartOptions = {
   layout: {
@@ -250,27 +250,27 @@ export const smallLineChartOptions = {
       left: 5,
       right: 5,
       top: 10,
-      bottom: 10
-    }
+      bottom: 10,
+    },
   },
   responsive: true,
   maintainAspectRatio: false,
   legend: {
-    display: false
+    display: false,
   },
   scales: {
     yAxes: [
       {
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
         },
-        display: false
-      }
+        display: false,
+      },
     ],
     xAxes: [
       {
-        display: false
-      }
-    ]
-  }
-}
+        display: false,
+      },
+    ],
+  },
+};

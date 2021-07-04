@@ -1,7 +1,8 @@
 import React from "react";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import { Row, Card, CardBody, CardTitle, Button, Col } from "reactstrap";
-import ChooseColsAndAnalysisModal from "./modal";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import "react-perfect-scrollbar/dist/css/styles.css";
 import {
   DoughnutChart,
   LineChart,
@@ -18,15 +19,37 @@ class PlotGraph extends React.Component {
     this.state = {};
   }
   render() {
+    const options = {
+      legend: {
+        display: true,
+        position: "right",
+      },
+    };
     return (
-      <Card style={{ cursor: "pointer" }} onClick={() => this.showModal()}>
+      <Card>
         <CardBody>
           <CardTitle>{this.props.graphTitle}</CardTitle>
-          <Row>
-            <Colxx xxs="12" lg="6" className="mb-5">
-              <div className="chart-container">
-                <LineChart shadow data={lineChartData} />
-              </div>
+
+          <Row
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Colxx xxs="12" lg="12" className="mb-5">
+              <PerfectScrollbar
+                options={{ suppressScrollY: true }}
+                component="div"
+              >
+                <div className="chart-container">
+                  <DoughnutChart
+                    shadow
+                    data={this.props.chartObj}
+                    options={options}
+                  />
+                </div>
+              </PerfectScrollbar>
             </Colxx>
           </Row>
         </CardBody>
@@ -34,3 +57,4 @@ class PlotGraph extends React.Component {
     );
   }
 }
+export default PlotGraph;
