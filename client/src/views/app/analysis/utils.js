@@ -1,22 +1,21 @@
 import { ThemeColors } from "../../../helpers/ThemeColors";
 const colors = ThemeColors();
-export const makeDataPlotableBivariate = (data, col1, col2) => {
-  const data_ = [];
-  data.map((item) => {
-    var row = {
-      x: item.col1,
-      y: item.col2,
-    };
-    data_.push(row);
-  });
+export const makeBarChartData = (data, col1, col2) => {
   const obj = {
+    labels: Object.keys(data),
     datasets: [
       {
-        borderWidth: 2,
         label: `${col2} Vs. ${col1}`,
+        data: Object.values(data),
         borderColor: colors.themeColor1,
-        backgroundColor: colors.themeColor1_10,
-        data: data_,
+        pointBackgroundColor: colors.foregroundColor,
+        pointBorderColor: colors.themeColor1,
+        pointHoverBackgroundColor: colors.themeColor1,
+        pointHoverBorderColor: colors.foregroundColor,
+        pointRadius: 6,
+        pointBorderWidth: 2,
+        pointHoverRadius: 8,
+        fill: false,
       },
     ],
   };

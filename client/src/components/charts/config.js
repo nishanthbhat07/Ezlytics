@@ -23,9 +23,9 @@ export const lineChartOptions = {
         },
         ticks: {
           beginAtZero: true,
-          stepSize: 5,
-          min: 50,
-          max: 70,
+          stepSize: 50,
+          min: 0,
+          max: 10000,
           padding: 20,
         },
       },
@@ -144,7 +144,7 @@ export const barChartOptions = {
   legend: {
     position: "bottom",
     labels: {
-      padding: 30,
+      padding: 20,
       usePointStyle: true,
       fontSize: 12,
     },

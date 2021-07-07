@@ -1,15 +1,15 @@
 import React from "react";
-import ChartComponent, { Chart } from "react-chartjs-2";
+import ChartComponent, { Chart, Line } from "react-chartjs-2";
 
 import { lineChartOptions } from "./config";
 
-export default class Line extends React.Component {
+export default class LineComp extends React.Component {
   constructor(props) {
     super(props);
     if (this.props.shadow) {
       Chart.defaults.lineWithShadow = Chart.defaults.line;
       Chart.controllers.lineWithShadow = Chart.controllers.line.extend({
-        draw: function(ease) {
+        draw: function (ease) {
           Chart.controllers.line.prototype.draw.call(this, ease);
           var ctx = this.chart.ctx;
           ctx.save();
@@ -21,20 +21,18 @@ export default class Line extends React.Component {
           ctx.stroke();
           Chart.controllers.line.prototype.draw.apply(this, arguments);
           ctx.restore();
-        }
+        },
       });
     }
   }
 
   render() {
-    const { data, shadow } = this.props;
+    const { data, shadow, options } = this.props;
     return (
-      <ChartComponent
-        ref={ref => (this.chart_instance = ref && ref.chart_instance)}
+      <Line
+        ref={(ref) => (this.chart_instance = ref && ref.chart_instance)}
         type={shadow ? "lineWithShadow" : "line"}
-        options={{
-          ...lineChartOptions
-        }}
+        options={options}
         data={data}
       />
     );

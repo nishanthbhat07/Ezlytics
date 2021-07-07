@@ -1,3 +1,4 @@
+from typing import final
 from flask import Flask,request
 from flask_cors import CORS
 import pymongo
@@ -280,6 +281,23 @@ def fetch_data_for_graph():
             final_row_data.append(d)
         return {'statusCode':200, 'data':final_row_data,'col1':col1,'col2':col2}
 
+@app.route('/fetch-groupby-data',methods=['POST'])
+def fetch_groupby_data():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    if(not check_auth):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    body=request.json
+    file_name=body['filename']
+    col1=body['col1']
+    col2=body['col2']
+    obj=fetch_from_aws(file_name=file_name)
+    data= pd.read_csv(obj['Body'])
+    d = data.groupby(col1).count()[col2]
+    # print()
+    return {'statusCode':200,'data':d.to_dict(),'min':int(d.min()),'max':int(d.max())}
 
 if __name__=='__main__':
     app.run(port=5000,debug=True)

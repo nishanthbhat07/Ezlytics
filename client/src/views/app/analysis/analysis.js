@@ -4,13 +4,13 @@ import { Row, Card, CardBody, CardTitle, Button, Col } from "reactstrap";
 import ChooseColsAndAnalysisModal from "./modal";
 import PlotGraph from "./plotGraph";
 
-import { makeDataPlotableBivariate, makeDataPlotableUnivariate } from "./utils";
+import { makeBarChartData, makeDataPlotableUnivariate } from "./utils";
 
 import { APIURI } from "../../../constants/defaultValues";
 
 import { connect } from "react-redux";
 
-class Analysis extends Component {
+class Analysis extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,6 +72,7 @@ class Analysis extends Component {
           var options = {
             graphTitle: `Pie Chart of ${this.state.selectedCol}`,
             chartObj: chartObj,
+            type: "pie",
           };
 
           this.setState({
@@ -80,7 +81,7 @@ class Analysis extends Component {
           this.showModal();
         });
     } else {
-      fetch(`${APIURI}/fetch-data-for-graphs`, {
+      fetch(`${APIURI}/fetch-groupby-data`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -95,18 +96,19 @@ class Analysis extends Component {
       })
         .then((res) => res.json())
         .then((result) => {
-          console.log(result);
-
           const { data } = result;
-          const chartObj = makeDataPlotableBivariate(
+          const chartObj = makeBarChartData(
             data,
             this.state.selectedCols1,
             this.state.selectedCols2
           );
           // console.log("[Chart Obj]: ", chartObj);
           var options = {
-            graphTitle: `Pie Chart of ${this.state.selectedCol}`,
+            graphTitle: `Bar chart of ${this.state.selectedCols1} & ${this.state.selectedCols2}`,
             chartObj: chartObj,
+            type: "bar",
+            min: result.min,
+            max: result.max,
           };
           this.setState({
             plots: this.state.plots.concat([options]),
@@ -115,6 +117,7 @@ class Analysis extends Component {
         });
     }
   };
+
   render() {
     const { columns, numerical_cols, categorical_cols } = this.props;
     return (
@@ -122,8 +125,11 @@ class Analysis extends Component {
         <Colxx xxs="12">
           {this.state.plots
             ? this.state.plots.map((item) => (
-                <Colxx className="mb-4" xxs="12">
+                <Colxx className="mb-4" xxs="12" key={item.graphTitle}>
                   <PlotGraph
+                    max={item.max}
+                    min={item.min}
+                    type={item.type}
                     graphTitle={item.graphTitle}
                     chartObj={item.chartObj}
                   />
