@@ -5,4 +5,4 @@
 Ezlytics is a platform which helps users in data wrangling and data visualization process.  
 
 ## Architecture
-![Architecture](arch.jpeg)
+![Architecture](arch.jpg)
