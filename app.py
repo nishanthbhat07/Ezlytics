@@ -41,6 +41,9 @@ db = client['DDashboard']
 user_col=db['users']
 dataset=db['datasets']
 
+@app.route('/send-cred',methods=['GET'])
+def send_cred():
+    return {'bucketName':bucket,'accessKeyId':aws_id,'secretAccessKey':aws_secret,'region': "ap-south-1", }
 
 # SIGNUP API
 @app.route('/signup',methods=['POST'])

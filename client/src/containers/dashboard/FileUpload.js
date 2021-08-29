@@ -5,25 +5,26 @@ import { NotificationManager } from "../../components/common/react-notifications
 
 import { connect } from "react-redux";
 import { setFileName } from "../../redux/file/file.actions";
-
+import { APIURI } from "../../constants/defaultValues";
 import "dropzone/dist/min/dropzone.min.css";
 
 var ReactDOMServer = require("react-dom/server");
 
-const config = {
-  bucketName: "projectbucketdatadashboard",
-  region: "ap-south-1",
-  accessKeyId: "AKIAQNGOSH462LVWMFOS",
-  secretAccessKey: "GyeRT+LGkTyvqg9pv2TrrRimVtK9xHL0KEAjx61q",
-};
 var dropzoneComponentConfig = {
   postUrl: "http://localhost:5000/dummy-api",
   iconFiletypes: [".csv"],
   showFiletypeIcon: true,
 };
 var eventHandlers = (setFileName) => ({
-  addedfile: (file) => {
+  addedfile: async (file) => {
     console.log(file.name);
+    var config = await fetch(`${APIURI}/send-cred`, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.json());
+    console.log("LINE 27 FILE UPLOAD", config);
     uploadFile(file, config)
       .then((data) => {
         setFileName(file.name);
