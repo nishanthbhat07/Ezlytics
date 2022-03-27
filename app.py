@@ -36,7 +36,7 @@ aws_secret=config['aws_secret']
 mongoURI=config['mongoURI']
 
 
-client = pymongo.MongoClient(mongoURI)
+client = pymongo.MongoClient(mongoURI,tls=True,tlsAllowInvalidCertificates=True)
 db = client['DDashboard']
 user_col=db['users']
 dataset=db['datasets']
@@ -69,7 +69,7 @@ def signup():
         else:
             return {'statusCode':422,"success":False,"msg":"EmailID Already exists"}
 
-# LOGIN API
+# LOGIN API 
 @app.route('/login',methods=['POST'])
 def login():
     cred= request.get_json()
