@@ -302,5 +302,23 @@ def fetch_groupby_data():
     # print()
     return {'statusCode':200,'data':d.to_dict(),'min':int(d.min()),'max':int(d.max())}
 
+
+@app.route('/save-dataset',methods=['POST'])
+def save_dataset():
+    headers= request.headers
+    check_auth= check_user_authorization(headers=headers)
+    if(check_auth['statusCode']==401):
+        return {'statusCode': 401, 'statusPhrase': "Unauthorized"}
+    body=request.json
+    file_name=body['filename']
+    location=body['location']
+    dataset.insert_one({
+            'user_id': check_auth['user']['_id'],
+            'file_name': file_name,
+            'pickle': None,
+            "location": location
+        })
+    return {'statusCode':200, 'statusPhrase':'OK', 'progress': 100,}
+
 if __name__=='__main__':
     app.run(port=5000,debug=True)
